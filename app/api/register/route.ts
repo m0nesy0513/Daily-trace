@@ -4,10 +4,12 @@ import bcrypt from "bcryptjs";
 function generateTag(length = 4) {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let result = "";
+
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  return result;
+
+  return result.toUpperCase();
 }
 
 export async function POST(req: Request) {
@@ -69,11 +71,17 @@ export async function POST(req: Request) {
       .select();
 
     if (error) {
-      return Response.json({ error: error.message }, { status: 500 });
+      return Response.json(
+        { error: error.message || "注册失败" },
+        { status: 500 }
+      );
     }
 
     return Response.json({
+      success: true,
       message: "注册成功",
+      username,
+      tag,
       full_username: fullUsername,
       user: data?.[0] ?? null,
     });

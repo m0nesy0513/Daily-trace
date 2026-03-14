@@ -121,13 +121,13 @@ export default function Home() {
       .split(/\s+/)
       .filter((w) => w.length >= 2);
 
-    const map: any = {};
+    const map: Record<string, number> = {};
 
     words.forEach((w) => {
       map[w] = (map[w] || 0) + 1;
     });
 
-    const sorted = Object.entries(map).sort((a: any, b: any) => b[1] - a[1]);
+    const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
 
     if (sorted.length === 0) return "平静推进的一周";
 
@@ -141,13 +141,12 @@ export default function Home() {
     }
 
     localStorage.removeItem("user");
-
     window.location.href = "/";
   };
 
   if (!ready) return null;
 
-  const hasIdentity = user || guest;
+  const hasIdentity = !!user || guest;
 
   return (
     <main className="p-24 max-w-2xl mx-auto">
@@ -155,12 +154,9 @@ export default function Home() {
 
       {!hasIdentity && (
         <>
-          <p className="text-gray-600 mb-8">
-            记录、对话、沉淀你的人生。
-          </p >
+          <p className="text-gray-600 mb-8">记录、对话、沉淀你的人生。</p >
 
           <div className="grid gap-4 mb-10">
-
             <Link href="/login?mode=login" className="border rounded-lg p-4 hover:bg-gray-50">
               登录
             </Link>
@@ -172,13 +168,13 @@ export default function Home() {
             <button
               onClick={() => {
                 localStorage.setItem("guest_mode", "true");
+                localStorage.removeItem("user");
                 window.location.href = "/";
               }}
               className="border rounded-lg p-4 text-left hover:bg-gray-50"
             >
               路人体验
             </button>
-
           </div>
         </>
       )}
@@ -192,25 +188,18 @@ export default function Home() {
           )}
 
           {guest && (
-            <p className="text-gray-600 mb-6">
-              当前为路人体验模式
-            </p >
+            <p className="text-gray-600 mb-6">当前为路人体验模式</p >
           )}
 
           <div className="border rounded-lg p-6 bg-gray-50 mb-6">
-
             <div className="text-xl font-semibold mb-2">
               已连续记录 {currentStreak} 天
             </div>
 
-            <p className="text-gray-600">
-              人生轨迹正在形成
-            </p >
-
+            <p className="text-gray-600">人生轨迹正在形成</p >
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-8 text-center">
-
             <div className="border rounded-lg p-4">
               <div className="text-2xl font-bold">{currentStreak}</div>
               <div className="text-gray-500 text-sm">当前连续</div>
@@ -225,23 +214,14 @@ export default function Home() {
               <div className="text-2xl font-bold">{totalDays}</div>
               <div className="text-gray-500 text-sm">记录天数</div>
             </div>
-
           </div>
 
           <div className="border rounded-lg p-6 bg-gray-50 mb-8">
-
-            <div className="font-semibold mb-2">
-              本周状态
-            </div>
-
-            <p className="text-gray-700">
-              {weeklyTitle}
-            </p >
-
+            <div className="font-semibold mb-2">本周状态</div>
+            <p className="text-gray-700">{weeklyTitle}</p >
           </div>
 
           <div className="grid gap-4 mb-8">
-
             <Link href="/write" className="border rounded-lg p-4 hover:bg-gray-50">
               写下今天
             </Link>
@@ -259,9 +239,8 @@ export default function Home() {
             </Link>
 
             <Link href="/timeline" className="border rounded-lg p-4 hover:bg-gray-50">
-              人生轨迹
+              人生时间轴
             </Link>
-
           </div>
 
           <button
