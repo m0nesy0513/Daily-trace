@@ -8,57 +8,51 @@ const supabase = createClient(
 );
 
 export async function POST(req: Request) {
-  try {
-    const { username, tag, password } = await req.json();
 
-    if (!username || !tag || !password) {
-      return NextResponse.json(
-        { error: "用户名、代号和密码不能为空" },
-        { status: 400 }
-      );
-    }
+  const { username, tag, password } = await req.json();
 
-    const fullUsername = `${username}#${tag}`;
-
-    const { data: user, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("full_username", fullUsername)
-      .single();
-
-    if (error || !user) {
-      return NextResponse.json(
-        { error: "用户不存在" },
-        { status: 401 }
-      );
-    }
-
-    const passwordMatch = await bcrypt.compare(
-      password,
-      user.password_hash
-    );
-
-    if (!passwordMatch) {
-      return NextResponse.json(
-        { error: "密码错误" },
-        { status: 401 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      user: {
-        id: user.id,
-        username: user.username,
-        tag: user.tag,
-        full_username: user.full_username,
-      },
-    });
-
-  } catch (err) {
+  if (!username || !tag || !password) {
     return NextResponse.json(
-      { error: "服务器错误" },
-      { status: 500 }
+      { error: "缺少参数" },
+      { status: 400 }
     );
   }
+
+  const fullUsername = `${username}#${tag}`;
+
+  const { data: user, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("full_username", fullUsername)
+    .single();
+
+  if (error || !user) {
+    return NextResponse.json(
+      { error: "用户不存在" },
+      { status: 401 }
+    );
+  }
+
+  const passwordMatch = await bcrypt.compare(
+    password,
+    user.password_hash
+  );
+
+  if (!passwordMatch) {
+    return NextResponse.json(
+      { error: "密码错误" },
+      { status: 401 }
+    );
+  }
+
+  return NextResponse.json({
+    success: true,
+    user: {
+      id: user.id,
+      username: user.username,
+      tag: user.tag,
+      full_username: user.full_username
+    }
+  });
+
 }

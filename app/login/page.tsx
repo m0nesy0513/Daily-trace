@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 type Mode = "login" | "register" | "guest";
@@ -52,10 +52,8 @@ function LoginInner() {
         return;
       }
 
-      // 存完整用户信息，后面 history / write / timeline 都更方便用
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.removeItem("guest_mode");
-
       window.location.href = "/";
     } catch {
       setLoading(false);
@@ -92,7 +90,6 @@ function LoginInner() {
         return;
       }
 
-      // 注册成功后显示 tag，并自动填入登录框
       setMessage(
         `注册成功！
 

@@ -31,12 +31,14 @@ export default function Home() {
 
     const load = async () => {
       if (savedUser) {
-        const u = JSON.parse(savedUser);
-
-        const res = await fetch(`/api/record/list?user_id=${u.id}`);
-        const data = await res.json();
-
-        setRecords(data.data || []);
+        try {
+          const u = JSON.parse(savedUser);
+          const res = await fetch(`/api/record/list?user_id=${u.id}`);
+          const data = await res.json();
+          setRecords(data.data || []);
+        } catch {
+          setRecords([]);
+        }
       } else {
         setRecords(getCurrentRecords());
       }
@@ -73,7 +75,6 @@ export default function Home() {
     for (let i = 1; i < sorted.length; i++) {
       const prev = new Date(sorted[i - 1]);
       const curr = new Date(sorted[i]);
-
       const diff = (prev.getTime() - curr.getTime()) / (1000 * 60 * 60 * 24);
 
       if (diff === 1) streak++;
@@ -87,14 +88,12 @@ export default function Home() {
     if (days.length === 0) return 0;
 
     const sorted = [...days].sort();
-
     let max = 1;
     let current = 1;
 
     for (let i = 1; i < sorted.length; i++) {
       const prev = new Date(sorted[i - 1]);
       const curr = new Date(sorted[i]);
-
       const diff = (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24);
 
       if (diff === 1) {
@@ -128,7 +127,6 @@ export default function Home() {
     });
 
     const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]);
-
     if (sorted.length === 0) return "平静推进的一周";
 
     return `围绕「${sorted[0][0]}」展开的一周`;
@@ -158,11 +156,11 @@ export default function Home() {
 
           <div className="grid gap-4 mb-10">
             <Link href="/login?mode=login" className="border rounded-lg p-4 hover:bg-gray-50">
-              登录
+              回来啦？登录继续记录
             </Link>
 
             <Link href="/login?mode=register" className="border rounded-lg p-4 hover:bg-gray-50">
-              注册
+              我是新人，注册一个账号
             </Link>
 
             <button
@@ -173,7 +171,7 @@ export default function Home() {
               }}
               className="border rounded-lg p-4 text-left hover:bg-gray-50"
             >
-              路人体验
+              先逛逛，路人体验模式
             </button>
           </div>
         </>
@@ -195,7 +193,6 @@ export default function Home() {
             <div className="text-xl font-semibold mb-2">
               已连续记录 {currentStreak} 天
             </div>
-
             <p className="text-gray-600">人生轨迹正在形成</p >
           </div>
 
@@ -243,10 +240,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <button
-            onClick={logout}
-            className="text-sm text-gray-500 underline"
-          >
+          <button onClick={logout} className="text-sm text-gray-500 underline">
             退出
           </button>
         </>

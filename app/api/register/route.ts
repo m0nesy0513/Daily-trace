@@ -19,24 +19,15 @@ export async function POST(req: Request) {
     const password = body.password?.trim();
 
     if (!username || !password) {
-      return Response.json(
-        { error: "用户名和密码不能为空" },
-        { status: 400 }
-      );
+      return Response.json({ error: "用户名和密码不能为空" }, { status: 400 });
     }
 
     if (username.includes("#")) {
-      return Response.json(
-        { error: "用户名里不要包含 # 号" },
-        { status: 400 }
-      );
+      return Response.json({ error: "用户名里不要包含 # 号" }, { status: 400 });
     }
 
     if (password.length < 6) {
-      return Response.json(
-        { error: "密码至少需要 6 位" },
-        { status: 400 }
-      );
+      return Response.json({ error: "密码至少需要 6 位" }, { status: 400 });
     }
 
     let tag = "";
@@ -71,10 +62,7 @@ export async function POST(req: Request) {
       .select();
 
     if (error) {
-      return Response.json(
-        { error: error.message || "注册失败" },
-        { status: 500 }
-      );
+      return Response.json({ error: error.message || "注册失败" }, { status: 500 });
     }
 
     return Response.json({
@@ -85,10 +73,7 @@ export async function POST(req: Request) {
       full_username: fullUsername,
       user: data?.[0] ?? null,
     });
-  } catch (error) {
-    return Response.json(
-      { error: "服务器出错了" },
-      { status: 500 }
-    );
+  } catch {
+    return Response.json({ error: "服务器出错了" }, { status: 500 });
   }
 }
