@@ -156,11 +156,11 @@ export default function Home() {
 
           <div className="grid gap-4 mb-10">
             <Link href="/login?mode=login" className="border rounded-lg p-4 hover:bg-gray-50">
-              回来啦？登录继续记录
+              回来啦？登录继续旅途
             </Link>
 
             <Link href="/login?mode=register" className="border rounded-lg p-4 hover:bg-gray-50">
-              我是新人，注册一个账号
+              初来乍到，注册一个账号
             </Link>
 
             <button
